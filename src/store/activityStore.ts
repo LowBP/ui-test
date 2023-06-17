@@ -52,6 +52,10 @@ class ActivityStore {
   setCurrentActivity(activity: Activity) {
     this.currentActivity = activity;
   }
+
+  setCurrentWeather(weather: Weather) {
+    this.currentWeather = weather;
+  }
 }
 
 const store = new ActivityStore();
