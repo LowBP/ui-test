@@ -56,6 +56,9 @@ class ActivityStore {
   currentPage: number = 0;
   totalPages: number = 1 + Number(this.allActivities.length / 10);
   allEvents: ActivityEvent[] = [];
+  addActivityModal: boolean = false;
+  editActivityModal: boolean = false;
+  deleteActivityModal: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -90,6 +93,22 @@ class ActivityStore {
         allDay: true,
       };
     });
+  }
+
+  createActivity(newActivity: Activity) {
+    this.allActivities.push(newActivity);
+  }
+
+  toggleAddActivityModal(flag: boolean) {
+    this.addActivityModal = flag;
+  }
+
+  toggleEditActivityModal(flag: boolean) {
+    this.editActivityModal = flag;
+  }
+
+  toggleDeleteActivityModal(flag: boolean) {
+    this.deleteActivityModal = flag;
   }
 }
 
