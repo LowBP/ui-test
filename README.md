@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+# React Application README
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React application that allows users to view and manage activities, and also provides weather information. The activities and weather data are stored in local storage to avoid repeated API calls and the need for a database.
 
-## Available Scripts
+## Installation
 
-In the project directory, you can run:
+To install the required packages from npm, follow these steps:
 
-### `npm start`
+1. Clone the repository to your local machine.
+2. Navigate to the project directory using the command line.
+3. Run the following command to install the dependencies:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+npm install
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Build
 
-### `npm test`
+To build the application, use the following command:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+npm run build
+```
 
-### `npm run build`
+This command will generate a production-ready build of your React application.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Serve
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To serve the built application using the `serve` npm package, follow these steps:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Install the `serve` package globally by running the following command:
 
-### `npm run eject`
+   ```
+   npm install -g serve
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. Once the installation is complete, navigate to the build directory using the command line.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Run the following command to start the server:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   ```
+   serve -s build
+   ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. Open your web browser and visit the provided server URL to interact with the application.
 
-## Learn More
+## Interacting with the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Once the application is running, users can interact with it using the following features:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Current Weather**: The landing page will display the current weather information.
+
+- **Activity List**: Users can view the list of activities on the same page as the weather. Each activity will display the activity type, performer, pitch, and date.
+
+- **Calendar View**: Users can open a new tab to access the calendar view for the month.
+
+- **Add Activity**: To add a new activity, users can select the activity type, performer, pitch, and date. After adding an activity, the activity list will be updated accordingly.
+
+- **Edit/Delete Activity**: Users can click on each activity in the list to edit or delete it.
+
+Please note that all the data, including activities and weather information, is stored in local storage to provide a seamless experience without the need for a database or repeated API calls.
