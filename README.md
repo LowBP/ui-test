@@ -10,9 +10,9 @@ To install the required packages from npm, follow these steps:
 2. Navigate to the project directory using the command line.
 3. Run the following command to install the dependencies:
 
-```
-npm install
-```
+   ```
+   npm install
+   ```
 
 ## Build
 
