@@ -2,7 +2,35 @@
 
 This is a React application that allows users to view and manage activities, and also provides weather information. The activities and weather data are stored in local storage to avoid repeated API calls and the need for a database.
 
-## Installation
+## Docker Build Instructions
+
+To build and run the application using Docker, follow these steps:
+
+1. Clone the repository to your local machine.
+
+2. Open a terminal and navigate to the directory containing the Dockerfile.
+
+3. Build the Docker image using the following command:
+
+   ```
+   docker build -t react-app .
+   ```
+
+   Replace `react-app` with your desired image name.
+
+4. After the build process completes, you can run the Docker container with the following command:
+
+   ```
+   docker run -p 3000:3000 react-app
+   ```
+
+   Adjust the port number if your React application is configured to run on a different port.
+
+5. Open your web browser and visit `http://localhost:3000` to interact with the running application.
+
+Please note that these instructions assume you have Docker installed on your machine. Make sure to customize the Dockerfile if you have any specific requirements or additional dependencies for your React application.
+
+## Instructions to run locally
 
 To install the required packages from npm, follow these steps:
 
