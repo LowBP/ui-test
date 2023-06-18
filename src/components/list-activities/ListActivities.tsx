@@ -18,8 +18,13 @@ function ListActivities() {
             performer: activity.performer,
             activityType: activity.activityType,
             pitch: activity.pitch,
-            dateTime: activity.dateTime?.toISOString(),
+            dateTime: activity.dateTime
         } as ActivityFormValues
+    }
+
+    const prepareForEdit = (activity: Activity) => {
+        store.setCurrentActivity(activity);
+        store.toggleEditActivityModal(true);
     }
 
     return (
@@ -37,15 +42,19 @@ function ListActivities() {
                 toggleModal={store.toggleEditActivityModal}
             />
             <div className="mx-auto w-1/2 grid">
-                <button onClick={() => store.toggleAddActivityModal(true)}>Add Activity </button>
+                <button
+                    className="btn btn-secondary bg-gradient-to-br from-cyan-500 to-blue-700"
+                    onClick={() => store.toggleAddActivityModal(true)}
+                >Add an Activity </button>
                 <Item.Group className="mt-0">
                     {
                         store.allActivities?.map(activity => {
+                            let date = activity.dateTime ? new Date(activity.dateTime) : new Date()
                             return (
                                 <Item
                                     className="activity-container"
                                     key={activity.id}
-                                    onClick={() => console.log(activity)}
+                                    onClick={() => prepareForEdit(activity)}
                                 >
                                     <Item.Content>
                                         <Item.Header>{activity.activityType}</Item.Header>
@@ -55,7 +64,7 @@ function ListActivities() {
                                         </Item.Meta>
                                         <Item.Extra>
                                             <div className="row-justify">
-                                                {activity.dateTime?.toLocaleDateString("en-IN", dateFormat)}
+                                                {date.toLocaleDateString("en-IN", dateFormat)}
                                             </div>
                                         </Item.Extra>
                                     </Item.Content>

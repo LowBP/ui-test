@@ -3,19 +3,18 @@ import * as Yup from 'yup';
 import { Col, Form, Row, Modal, Container } from 'react-bootstrap';
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import store, { ACTIVITY_TYPE, PERFORMER, PITCH } from '../../store/activityStore';
+import store, { ACTIVITY_TYPE, Activity, PERFORMER, PITCH } from '../../store/activityStore';
 import { observer } from 'mobx-react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
 
 type Props = {
     view: string;
     showModal: boolean;
     defaults: ActivityFormValues;
-    toggleModal: Function;
+    toggleModal: (flag: boolean) => void;
 }
 
 export interface ActivityFormValues {
@@ -27,12 +26,6 @@ export interface ActivityFormValues {
 
 function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
 
-    const [readOnly, setReadOnly] = useState(false);
-
-    useEffect(() => {
-        setReadOnly(view === "edit");
-    }, [view, setReadOnly])
-
     const activitySchema = Yup.object().shape({
         performer: Yup.string().required("Performer is required"),
         activityType: Yup.string().required("Activity type is required"),
@@ -40,105 +33,109 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
         dateTime: Yup.string().required("Date is required"),
     });
 
-    const addNewActivity = (values: ActivityFormValues) => {
+    const promptDelete = () => {
+        store.toggleEditActivityModal(false);
+        store.toggleDeleteActivityModal(true);
+    }
+
+    const showError = (message: string) => {
+        toast.error(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
+    const showAlert = (message: string) => {
+        toast.success(message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
+    const addNewActivity = async (values: ActivityFormValues) => {
+        store.toggleAddActivityModal(false);
         try {
             console.log(values);
-            store.toggleAddActivityModal(false);
-            toast.success("Added the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            const activity: Activity = {
+                id: values.activityType,
+                activityType: values.activityType,
+                dateTime: values.dateTime,
+                performer: values.performer,
+                pitch: values.pitch,
+            }
+
+            let activityId = await store.createActivity(activity);
+            if (!activityId) {
+                showError("Error in adding the activity!");
+            }
+            else {
+                showAlert("Added the activity!");
+            }
         }
         catch (e) {
-            toast.error("Unable to add the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            console.log(e);
+            showError("Unable to add the activity!");
         }
     }
 
     const editActivity = (values: ActivityFormValues) => {
+        store.toggleEditActivityModal(false);
         try {
-            console.log(values);
-            toast.success("Edited the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            let updatedId = store.updateActivity(values);
+            if (!updatedId) {
+                showError("Failed to edit the activity!");
+            }
+            else {
+                showAlert("Edited the activity!");
+            }
         }
         catch (e) {
-            toast.error("Unable to edit the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            showError("Unable to edit the activity!");
         }
     }
 
     const deleteActivity = () => {
+        store.toggleDeleteActivityModal(false);
         try {
-            toast.success("Deleted the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            store.removeCurrentActivity();
+            showAlert("Deleted the activity!");
         }
         catch (e) {
-            toast.error("Unable to delete the activity!", {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            console.log(e);
+            showError("Unable to delete the activity!");
         }
     }
 
-
     const renderActivtyTypeOptions = () => {
-        return Object.values(ACTIVITY_TYPE).map(option => {
-            return <option value={option}>{option}</option>;
+        return Object.values(ACTIVITY_TYPE).map((option) => {
+            return <option key={option} value={option}>{option}</option>;
         });
     };
 
     const renderPerformerOptions = () => {
         return Object.values(PERFORMER).map(option => {
-            return <option value={option}>{option}</option>;
+            return <option key={option} value={option}>{option}</option>;
         });
     };
     const renderPitchOptions = () => {
         return Object.values(PITCH).map(option => {
-            return <option value={option}>{option}</option>;
+            return <option key={option} value={option}>{option}</option>;
         });
     };
 
     return (
         <div>
-            <Modal show={showModal} onHide={() => toggleModal(false)}>
+            <Modal show={showModal} onHide={() => view === "add" ? store.toggleAddActivityModal(false) : store.toggleEditActivityModal(false)}>
                 <Modal.Header closeButton={true} className='justify-content-end'>
                     {view === "add" ? "Add Activity Details" : "Activity Details"}
                 </Modal.Header>
@@ -157,7 +154,6 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                                             <Form.Label>Activity Type</Form.Label>
                                             <Form.Select
                                                 placeholder="What task do I need?"
-                                                disabled={readOnly}
                                                 value={addActivityProps.values.activityType}
                                                 onChange={(e) => {
                                                     addActivityProps.setFieldValue("activityType", e.target.value);
@@ -176,7 +172,6 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                                             <Form.Label>Performer</Form.Label>
                                             <Form.Select
                                                 placeholder="Who should do my task?"
-                                                disabled={readOnly}
                                                 value={addActivityProps.values.performer}
                                                 onChange={(e) => {
                                                     addActivityProps.setFieldValue("performer", e.target.value);
@@ -195,7 +190,6 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                                             <Form.Label>Pitch</Form.Label>
                                             <Form.Select
                                                 placeholder="Where should I do the task?"
-                                                disabled={readOnly}
                                                 value={addActivityProps.values.pitch}
                                                 onChange={(e) => {
                                                     addActivityProps.setFieldValue("pitch", e.target.value);
@@ -220,7 +214,6 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                                                         onChange={(newValue) => {
                                                             addActivityProps.setFieldValue("date", newValue);
                                                         }}
-                                                        disabled={readOnly}
                                                         disableFuture={false}
                                                     />
                                                 </LocalizationProvider>
@@ -242,26 +235,20 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                                                 </button>
                                                 :
                                                 <div className='manage-activity-btns'>
-                                                    {
-                                                        (!readOnly) &&
-                                                        < button
-                                                            type="submit"
-                                                            className='btn btn-success w-inherit'
-                                                            disabled={(!addActivityProps.isValid) || readOnly}
-                                                        >
-                                                            Save
-                                                        </button>
-                                                    }
-                                                    {
-                                                        (!readOnly) &&
-                                                        < button
-                                                            type="button"
-                                                            className='btn btn-danger w-inherit'
-                                                            onClick={(e) => deleteActivity()}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    }
+                                                    < button
+                                                        type="submit"
+                                                        className='btn btn-success mr-10 w-inherit bg-green-700'
+                                                        disabled={(!addActivityProps.isValid)}
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    < button
+                                                        type="button"
+                                                        className='btn btn-danger w-inherit bg-red-700'
+                                                        onClick={(e) => promptDelete()}
+                                                    >
+                                                        Delete
+                                                    </button>
                                                 </div>
                                         }
                                     </Row>
@@ -280,14 +267,14 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                     <div className='manage-activty-btns'>
                         < button
                             type="button"
-                            className='btn btn-danger w-inherit'
-                            onClick={console.log}
+                            className='btn btn-danger w-inherit bg-red-700 mr-10'
+                            onClick={() => deleteActivity()}
                         >
                             Yes
                         </button>
                         < button
                             type="button"
-                            className='btn btn-success w-inherit'
+                            className='btn btn-success w-inherit bg-green-700'
                             onClick={() => store.toggleDeleteActivityModal(false)}
                         >
                             No

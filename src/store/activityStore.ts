@@ -21,10 +21,10 @@ export enum PITCH {
 
 export type Activity = {
   id?: string;
-  activityType?: ACTIVITY_TYPE;
-  dateTime?: Date;
-  performer?: PERFORMER;
-  pitch?: PITCH;
+  activityType?: string;
+  dateTime?: string;
+  performer?: string;
+  pitch?: string;
 };
 
 export type Weather = {
@@ -82,23 +82,6 @@ class ActivityStore {
     this.currentPage = page;
   }
 
-  setEvents() {
-    this.allEvents = this.allActivities.map((activity) => {
-      return {
-        start: activity.dateTime,
-        end: activity.dateTime,
-        agendaStart: activity.dateTime,
-        agendaEnd: activity.dateTime,
-        title: `${activity.performer} ${activity.activityType} ${activity.pitch}`,
-        allDay: true,
-      };
-    });
-  }
-
-  createActivity(newActivity: Activity) {
-    this.allActivities.push(newActivity);
-  }
-
   toggleAddActivityModal(flag: boolean) {
     this.addActivityModal = flag;
   }
@@ -109,6 +92,52 @@ class ActivityStore {
 
   toggleDeleteActivityModal(flag: boolean) {
     this.deleteActivityModal = flag;
+  }
+
+  setEvents() {
+    this.allEvents = this.allActivities.map((activity) => {
+      return {
+        start: activity.dateTime ? new Date(activity.dateTime) : new Date(),
+        end: activity.dateTime ? new Date(activity.dateTime) : new Date(),
+        agendaStart: activity.dateTime ? new Date(activity.dateTime) : new Date(),
+        agendaEnd: activity.dateTime ? new Date(activity.dateTime) : new Date(),
+        title: `${activity.performer} ${activity.activityType} ${activity.pitch}`,
+        allDay: true,
+      };
+    });
+  }
+
+  async createActivity(newActivity: Activity) {
+    let id = crypto.randomUUID();
+    newActivity.id = id;
+    let newActivities: Activity[] = [...this.allActivities, newActivity];
+    this.setAllActivities(newActivities);
+    localStorage.setItem("activities", JSON.stringify(newActivities));
+    this.setEvents();
+    return id;
+  }
+
+  updateActivity(activity: Activity) {
+    let oldActivityIndex = this.allActivities.findIndex((item) => (item.id = this.currentActivity?.id));
+    if (oldActivityIndex > -1) {
+      Object.assign(this.allActivities[oldActivityIndex], activity);
+      localStorage.setItem("activities", JSON.stringify(this.allActivities));
+      this.setCurrentActivity({});
+      this.setEvents();
+      return this.allActivities[oldActivityIndex].id;
+    } else {
+      return;
+    }
+  }
+
+  removeCurrentActivity() {
+    let removeId = this.currentActivity.id;
+    let updatedActivities = this.allActivities.filter((item) => item.id !== removeId);
+    this.setAllActivities(updatedActivities);
+    localStorage.setItem("activities", JSON.stringify(updatedActivities));
+    this.setCurrentActivity({});
+    this.setEvents();
+    return removeId;
   }
 }
 
