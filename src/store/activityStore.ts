@@ -40,13 +40,31 @@ export type Weather = {
   timezone?: number;
 };
 
+export type ActivityEvent = {
+  start?: Date;
+  end?: Date;
+  agendaStart?: Date;
+  agendaEnd?: Date;
+  title?: string;
+  allDay?: boolean;
+};
+
 class ActivityStore {
   allActivities: Activity[] = [];
   currentActivity: Activity = {};
   currentWeather: Weather = {};
+  currentPage: number = 0;
+  totalPages: number = 1 + Number(this.allActivities.length / 10);
+  allEvents: ActivityEvent[] = [];
 
   constructor() {
     makeAutoObservable(this);
+    this.setEvents();
+  }
+
+  setAllActivities(activities: Activity[]) {
+    this.allActivities = activities;
+    this.setEvents();
   }
 
   setCurrentActivity(activity: Activity) {
@@ -55,6 +73,23 @@ class ActivityStore {
 
   setCurrentWeather(weather: Weather) {
     this.currentWeather = weather;
+  }
+
+  setPage(page: number) {
+    this.currentPage = page;
+  }
+
+  setEvents() {
+    this.allEvents = this.allActivities.map((activity) => {
+      return {
+        start: activity.dateTime,
+        end: activity.dateTime,
+        agendaStart: activity.dateTime,
+        agendaEnd: activity.dateTime,
+        title: `${activity.performer} ${activity.activityType} ${activity.pitch}`,
+        allDay: true,
+      };
+    });
   }
 }
 

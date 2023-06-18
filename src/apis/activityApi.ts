@@ -15,7 +15,6 @@ const fetchWeather = async (query: queryParams): Promise<Weather> => {
     const response = await fetch(`${BASE_URL}/weather?${formatQuery(query)}`);
     let res = await response.json();
     let weatherInfo = deStructureWeatherMap(res);
-    console.log(weatherInfo);
     localStorage.setItem("weatherInfo", JSON.stringify(weatherInfo));
     return weatherInfo as Weather;
   } else {

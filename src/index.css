@@ -8,3 +8,106 @@
     font-family: "Poppins", sans-serif;
   }
 }
+
+i.icon.outline {
+  outline-style: none !important;
+}
+
+.activity-container {
+  border-top: 2px solid #ad1313 !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+  margin: 8px 0 !important;
+  min-height: 50px;
+  display: flex;
+  justify-content: left !important;
+  padding: 10px !important;
+  border-radius: 5px !important;
+  cursor: pointer;
+}
+
+.activity-container .header {
+  font-size: 16px !important;
+  text-align: left !important;
+}
+
+.activity-container .content {
+  text-align: left !important;
+}
+
+.ui.items > .item .meta {
+  margin: 2px 0 !important;
+  text-align: left !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.activity-container .extra {
+  font-size: 12px !important;
+  margin-top: 1px !important;
+}
+
+.rbc-calendar {
+  min-height: 400px;
+}
+
+.rbc-toolbar {
+  flex-direction: column;
+}
+
+.rbc-btn-group button {
+  cursor: pointer;
+  width: 100%;
+}
+
+.rbc-btn-group {
+  display: flex !important;
+  width: 100%;
+}
+
+.rbc-toolbar-label {
+  padding: 5px 50px !important;
+  border: 1px solid black;
+  margin: 10px 10px !important;
+  border-radius: 10px !important;
+  font-size: 15px;
+}
+
+.rbc-month-view,
+.rbc-header,
+.rbc-day-bg {
+  border: none !important;
+}
+
+.rbc-month-header {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.rbc-month-row {
+  overflow: hidden !important;
+}
+
+.rbc-day-bg,
+.rbc-row-bg,
+.rbc-month-row {
+  max-height: 45px;
+  text-align: center;
+}
+
+.rbc-custom-btn {
+  border: none !important;
+  box-shadow: -5px 6px 30px 1px rgb(0 0 0 / 10%);
+  height: 36px;
+  font-size: 15px;
+}
+
+.rbc-date-cell {
+  text-align: center !important;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.text-align-left div {
+  text-align: left !important;
+}
