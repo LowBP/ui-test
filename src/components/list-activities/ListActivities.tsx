@@ -2,15 +2,20 @@ import { Icon, Item, Pagination } from "semantic-ui-react"
 import store, { Activity } from "../../store/activityStore"
 import { observer } from "mobx-react";
 import CustomModal, { ActivityFormValues } from "../modal/CustomModal";
+import { dateTimeValue } from "../../utils/activityUtil";
 
 function ListActivities() {
-    const dateFormat: Intl.DateTimeFormatOptions = { minute: 'numeric', hour: 'numeric', day: '2-digit', month: '2-digit', year: 'numeric' };
+    let currentDate = new Date();
+    currentDate.setMinutes(currentDate.getMinutes() + 3)
+    let endDateTime= new Date();
+    endDateTime.setHours(endDateTime.getHours() + 1);
 
     const defaults: ActivityFormValues = {
         performer: "",
         activityType: "",
         pitch: "",
-        dateTime: new Date().toISOString(),
+        startDateTime: currentDate.toISOString(),
+        endDateTime: endDateTime.toISOString(),
     }
 
     const convertActivity = (activity: Activity) => {
@@ -18,7 +23,7 @@ function ListActivities() {
             performer: activity.performer,
             activityType: activity.activityType,
             pitch: activity.pitch,
-            dateTime: activity.dateTime
+            startDateTime: activity.startDateTime
         } as ActivityFormValues
     }
 
@@ -48,8 +53,9 @@ function ListActivities() {
                 >Add an Activity </button>
                 <Item.Group className="mt-0">
                     {
-                        store.allActivities?.map(activity => {
-                            let date = activity.dateTime ? new Date(activity.dateTime) : new Date()
+                        store.allActivities?.slice().reverse().map(activity => {
+                            let startDate = activity.startDateTime ? new Date(activity.startDateTime) : new Date()
+                            let endDate = activity.endDateTime ? new Date(activity.endDateTime) : new Date()
                             return (
                                 <Item
                                     className="activity-container"
@@ -64,7 +70,7 @@ function ListActivities() {
                                         </Item.Meta>
                                         <Item.Extra>
                                             <div className="row-justify">
-                                                {date.toLocaleDateString("en-IN", dateFormat)}
+                                                {dateTimeValue(startDate)}  --  {dateTimeValue(endDate)}
                                             </div>
                                         </Item.Extra>
                                     </Item.Content>

@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { dateTimeValue } from "../utils/activityUtil";
 
 export enum ACTIVITY_TYPE {
   MOWING = "Mowing",
@@ -22,7 +23,8 @@ export enum PITCH {
 export type Activity = {
   id?: string;
   activityType?: string;
-  dateTime?: string;
+  startDateTime?: string;
+  endDateTime?: string;
   performer?: string;
   pitch?: string;
 };
@@ -97,10 +99,10 @@ class ActivityStore {
   setEvents() {
     this.allEvents = this.allActivities.map((activity) => {
       return {
-        start: activity.dateTime ? new Date(activity.dateTime) : new Date(),
-        end: activity.dateTime ? new Date(activity.dateTime) : new Date(),
-        agendaStart: activity.dateTime ? new Date(activity.dateTime) : new Date(),
-        agendaEnd: activity.dateTime ? new Date(activity.dateTime) : new Date(),
+        start: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
+        end: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
+        agendaStart: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
+        agendaEnd: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
         title: `${activity.performer} ${activity.activityType} ${activity.pitch}`,
         allDay: true,
       };
@@ -128,6 +130,13 @@ class ActivityStore {
     } else {
       return;
     }
+  }
+
+  matchingBusyActivities(activity: Activity) {
+    const performers: Activity[] = this.allActivities?.filter(a=> a.performer === activity.performer)?.filter(a=>(new Date(dateTimeValue(a.startDateTime!)) <= new Date(dateTimeValue(activity.endDateTime!)) && new Date(dateTimeValue(a.endDateTime!)) >= new Date(dateTimeValue(activity.startDateTime!))))
+    const removedPerformers  = performers.length ? this.allActivities?.filter(a=> performers.findIndex(performer=> performer.id === a.id ) === -1) : this.allActivities
+    const pitches = removedPerformers.filter(a=> a.pitch === activity.pitch)?.filter(a=> (new Date(dateTimeValue(a.startDateTime!)) <= new Date(dateTimeValue(activity.endDateTime!)) && new Date(dateTimeValue(a.endDateTime!)) >= new Date(dateTimeValue(activity.startDateTime!))))
+   return pitches;
   }
 
   removeCurrentActivity() {

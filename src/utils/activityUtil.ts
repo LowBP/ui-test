@@ -37,3 +37,6 @@ export const deStructureWeatherMap = (data: any) => {
     country,
   };
 };
+
+export const dateTimeFromat: Intl.DateTimeFormatOptions = { minute: 'numeric', hour: 'numeric', day: '2-digit', month: '2-digit', year: 'numeric' };
+export const dateTimeValue = (dateTime: string | Date) => (new Date(dateTime).toLocaleDateString("de-DE", dateTimeFromat));
