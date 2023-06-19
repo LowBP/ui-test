@@ -7,7 +7,7 @@ import { dateTimeValue } from "../../utils/activityUtil";
 function ListActivities() {
     let currentDate = new Date();
     currentDate.setMinutes(currentDate.getMinutes() + 3)
-    let endDateTime= new Date();
+    let endDateTime = new Date();
     endDateTime.setHours(endDateTime.getHours() + 1);
 
     const defaults: ActivityFormValues = {
@@ -30,6 +30,20 @@ function ListActivities() {
     const prepareForEdit = (activity: Activity) => {
         store.setCurrentActivity(activity);
         store.toggleEditActivityModal(true);
+    }
+
+    const taskStatus = (activity: Activity) => {
+        const { endDateTime, startDateTime } = activity;
+        if (new Date() > new Date(endDateTime!)) {
+            return (<div className="text-green-600 font text-base text-right">{'Completed!'}</div>)
+        }
+
+        if (new Date() < new Date(startDateTime!)) {
+            return (<div className="text-grey-600 font text-base text-right">{'Pending!'}</div>)
+        }
+
+        return (<div className="text-green-600 font text-base text-right">{'On Going!'}</div>)
+
     }
 
     return (
@@ -70,26 +84,31 @@ function ListActivities() {
                                         </Item.Meta>
                                         <Item.Extra>
                                             <div className="row-justify">
-                                                {dateTimeValue(startDate)}  --  {dateTimeValue(endDate)}
+                                                <b> {dateTimeValue(startDate)}  --  {dateTimeValue(endDate)} </b>
                                             </div>
                                         </Item.Extra>
+                                        <Item.Extra>
+                                            <div>{taskStatus(activity)}</div>
+                                        </Item.Extra>
+
                                     </Item.Content>
                                 </Item>
                             )
                         })
                     }
                 </Item.Group>
-                <Pagination
-                    className="sticky-bottom w-full justify-center flex"
-                    activePage={store.currentPage}
-                    ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-                    firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                    lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                    prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                    nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                    totalPages={store.totalPages}
-                    onPageChange={(e, data) => store.setPage(data.activePage as number)}
-                />
+                {store.allActivities?.length > 0 &&
+                    <Pagination
+                        className="sticky-bottom w-full justify-center flex"
+                        activePage={store.currentPage}
+                        ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+                        firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+                        lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+                        prevItem={{ content: <Icon name='angle left' />, icon: true }}
+                        nextItem={{ content: <Icon name='angle right' />, icon: true }}
+                        totalPages={store.totalPages}
+                        onPageChange={(e, data) => store.setPage(data.activePage as number)}
+                    />}
             </div>
         </>
     )

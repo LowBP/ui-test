@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { dateTimeValue } from "../utils/activityUtil";
 
 export enum ACTIVITY_TYPE {
   MOWING = "Mowing",
@@ -133,10 +132,13 @@ class ActivityStore {
   }
 
   matchingBusyActivities(activity: Activity) {
-    const performers: Activity[] = this.allActivities?.filter(a=> a.performer === activity.performer)?.filter(a=>(new Date(dateTimeValue(a.startDateTime!)) <= new Date(dateTimeValue(activity.endDateTime!)) && new Date(dateTimeValue(a.endDateTime!)) >= new Date(dateTimeValue(activity.startDateTime!))))
-    const removedPerformers  = performers.length ? this.allActivities?.filter(a=> performers.findIndex(performer=> performer.id === a.id ) === -1) : this.allActivities
-    const pitches = removedPerformers.filter(a=> a.pitch === activity.pitch)?.filter(a=> (new Date(dateTimeValue(a.startDateTime!)) <= new Date(dateTimeValue(activity.endDateTime!)) && new Date(dateTimeValue(a.endDateTime!)) >= new Date(dateTimeValue(activity.startDateTime!))))
-   return pitches;
+    const performers: Activity[] = this.allActivities?.filter(a => a.performer === activity.performer)?.filter(a => {
+      return (new Date(a.startDateTime!).toISOString() <= new Date(activity.endDateTime!).toISOString() && new Date(a.endDateTime!).toISOString() >= new Date(activity.startDateTime!).toISOString())
+    })
+    const removedPerformers = performers.length ? this.allActivities?.filter(a => performers.findIndex(performer => performer.id === a.id) === -1) : this.allActivities
+    const pitches = removedPerformers.filter(a => a.pitch === activity.pitch)?.filter(a => (new Date(a.startDateTime!).toISOString() <= new Date(activity.endDateTime!).toISOString() && new Date(a.endDateTime!).toISOString() >= new Date(activity.startDateTime!).toISOString()))
+
+    return performers.concat(pitches);
   }
 
   removeCurrentActivity() {

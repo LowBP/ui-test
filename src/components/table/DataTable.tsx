@@ -10,7 +10,7 @@ function DataTable({rows}: Props ) {
       <thead>
         <tr>
           <th>Start - End Time</th>
-          <th>Activity Type</th>
+          <th>Activity</th>
           <th>Performer</th>
           <th>Pitch</th>
         </tr>

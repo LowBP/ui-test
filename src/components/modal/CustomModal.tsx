@@ -281,6 +281,7 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
 
                                         {busyActivities.length > 0 && (
                                             <Row className="mb-3">
+                                                <div className='pb-3 text-red-500'><b>Note: Already allocated slots for this Date & Time</b></div>
                                                 <DataTable rows={busyActivities} />
                                             </Row>)}
 
@@ -326,21 +327,24 @@ function CustomModal({ view, showModal, toggleModal, defaults }: Props) {
                     Confirm delete
                 </Modal.Header>
                 <Modal.Body>
-                    Do you really want to remove?
+                    <div className='mb-3'>
+                        Do you really want to remove?
+                    </div>
                     <div className='manage-activty-btns'>
+
                         < button
                             type="button"
                             className='btn btn-danger w-inherit bg-red-700 mr-10'
-                            onClick={() => deleteActivity()}
+                            onClick={() => store.toggleDeleteActivityModal(false)}
                         >
-                            Yes
+                            No
                         </button>
                         < button
                             type="button"
                             className='btn btn-success w-inherit bg-green-700'
-                            onClick={() => store.toggleDeleteActivityModal(false)}
+                            onClick={() => deleteActivity()}
                         >
-                            No
+                            Yes
                         </button>
                     </div>
                 </Modal.Body>
