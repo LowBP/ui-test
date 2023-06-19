@@ -1,4 +1,4 @@
-import { Calendar, Views, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from 'moment';
 import store from "../../store/activityStore";
 import { observer } from "mobx-react";
