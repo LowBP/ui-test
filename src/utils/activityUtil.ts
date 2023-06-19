@@ -3,6 +3,7 @@ import { queryParams } from "../apis/activityApi";
 const APIKey = process.env.REACT_APP_WEATHER_API_KEY;
 
 export const formatQuery = (query: queryParams) => {
+  if(!APIKey) alert('please add REACT_APP_WEATHER_API_KEY to .env.local file!')
   let queries = "";
   for (let key in query) {
     queries += key + "=" + query[key as keyof queryParams] + "&";
