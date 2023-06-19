@@ -2,6 +2,10 @@
 
 This is a React application that allows users to view and manage activities, and also provides weather information. The activities and weather data are stored in local storage to avoid repeated API calls and the need for a database.
 
+## Note
+
+Please add your weather_api key to `REACT_APP_WEATHER_API_KEY=` in .env.local 
+
 ## Docker Build Instructions
 
 To build and run the application using Docker, follow these steps:
