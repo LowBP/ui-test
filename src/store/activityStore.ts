@@ -104,7 +104,7 @@ class ActivityStore {
         agendaStart: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
         agendaEnd: activity.startDateTime ? new Date(activity.startDateTime) : new Date(),
         title: `${activity.performer} ${activity.activityType} ${activity.pitch}`,
-        allDay: true,
+        allDay: false,
       };
     });
   }
